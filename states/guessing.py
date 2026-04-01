@@ -1,7 +1,6 @@
 """Guessing state - waiting for player to select cup."""
 
 import pygame
-from backdrop import Backdrop
 from states.base_state import BaseGameState
 import layout
 from cup import Cup
@@ -18,7 +17,6 @@ class Guessing(BaseGameState):
             ball_position: Which position the ball is hidden at ('left', 'middle', 'right')
         """
         super().__init__(game)
-        self.backdrop = Backdrop(self.SCREEN_WIDTH, self.SCREEN_HEIGHT)
         self.ball_position = ball_position
         self.cups = game.cups
         self.player_guess = None
@@ -113,15 +111,9 @@ class Guessing(BaseGameState):
     
     def draw(self, surface: pygame.Surface):
         """Draw the guessing state."""
-        # Draw backdrop
-        self.backdrop.draw(surface)
-        
-        # Draw border
-        self._draw_border(surface)
+        # Draw base elements (backdrop, border, message bar)
+        self._draw_base(surface, "Which cup has the ball? (1-3 or click)")
         
         # Draw cups
         for cup in self.cups:
             cup.draw(surface, debug=True)
-        
-        # Draw message bar
-        self._draw_message_bar(surface, "Which cup has the ball? (1-3 or click)")

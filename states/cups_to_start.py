@@ -1,7 +1,6 @@
 """Cups to start positions state for the game."""
 
 import pygame
-from backdrop import Backdrop
 from cup import Cup
 from states.base_state import BaseGameState
 import layout
@@ -18,7 +17,6 @@ class CupsToStart(BaseGameState):
             ball_position: Which position the ball is hidden at ("left", "middle", or "right")
         """
         super().__init__(game)
-        self.backdrop = Backdrop(self.SCREEN_WIDTH, self.SCREEN_HEIGHT)
         self.ball_position = ball_position
         
         # Get existing cups from previous state
@@ -56,10 +54,7 @@ class CupsToStart(BaseGameState):
         Args:
             key: The pygame key code
         """
-        # For now, space skips to start screen (for testing)
-        if key == pygame.K_SPACE and self.animation_complete:
-            from game import GameState
-            self.game.change_state(GameState.SHUFFLING)
+        pass  # No input needed - auto-transitions to shuffling
     
     def update(self, dt: float):
         """Update the cups to start positions state.
@@ -82,6 +77,9 @@ class CupsToStart(BaseGameState):
             # Store cups in game for next state
             self.game.cups = self.cups
             print("Cups ready at starting positions!")
+            # Auto-transition to shuffling
+            from game import GameState
+            self.game.change_state(GameState.SHUFFLING)
     
     def draw(self, surface: pygame.Surface):
         """Draw the cups to start positions state.
@@ -89,18 +87,12 @@ class CupsToStart(BaseGameState):
         Args:
             surface: The pygame surface to draw on
         """
-        # Draw backdrop
-        self.backdrop.draw(surface)
+        # Message shows during positioning
+        message = "Get ready! Watch the cups..."
         
-        # Draw border
-        self._draw_border(surface)
+        # Draw base elements (backdrop, border, message bar)
+        self._draw_base(surface, message)
         
         # Draw cups
         for cup in self.cups:
             cup.draw(surface, debug=True)
-        
-        # Draw message bar
-        if self.animation_complete:
-            self._draw_message_bar(surface, "Get ready! Watch the cups...")
-        else:
-            self._draw_message_bar(surface, "Setting up...")

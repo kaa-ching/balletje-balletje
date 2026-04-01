@@ -2,6 +2,7 @@
 
 import pygame
 import layout
+from backdrop import Backdrop
 
 
 class BaseGameState:
@@ -20,6 +21,7 @@ class BaseGameState:
             game: Reference to the main Game instance
         """
         self.game = game
+        self.backdrop = Backdrop(self.SCREEN_WIDTH, self.SCREEN_HEIGHT)
     
     def on_key_down(self, key: int):
         """Handle key press events. Override in subclasses."""
@@ -99,3 +101,46 @@ class BaseGameState:
             if cup.has_ball:
                 return i
         return None
+    
+    def _draw_base(self, surface: pygame.Surface, message: str = None):
+        """Draw the base elements (backdrop, border, message bar).
+        Convenience method for states without custom content layering.
+        
+        Args:
+            surface: The pygame surface to draw on
+            message: Optional message to display (None or empty string for blank bar)
+        """
+        self._draw_state(surface, message)
+    
+    def _draw_base_background(self, surface: pygame.Surface):
+        """Draw just the backdrop and border (without message bar).
+        Useful for states that need custom content layering between border and message.
+        
+        Args:
+            surface: The pygame surface to draw on
+        """
+        # Draw backdrop
+        self.backdrop.draw(surface)
+        
+        # Draw border
+        self._draw_border(surface)
+    
+    def _draw_state(self, surface: pygame.Surface, message: str = None, content_callback=None):
+        """Draw a complete state with custom content between backdrop and message bar.
+        This is the main drawing helper for all states.
+        
+        Args:
+            surface: The pygame surface to draw on
+            message: Message to display in the message bar (None or empty string for blank bar)
+            content_callback: Optional function(surface) to call for drawing custom content
+                            (called between backdrop/border and message bar)
+        """
+        # Draw backdrop and border
+        self._draw_base_background(surface)
+        
+        # Draw custom content if provided
+        if content_callback:
+            content_callback(surface)
+        
+        # Draw message bar (always visible, even if empty)
+        self._draw_message_bar(surface, message or "")

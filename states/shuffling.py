@@ -1,7 +1,6 @@
 """Shuffling state for the game."""
 
 import pygame
-from backdrop import Backdrop
 from states.base_state import BaseGameState
 from shuffle_moves import ShuffleMove
 
@@ -17,7 +16,6 @@ class Shuffling(BaseGameState):
             ball_position: Which position the ball is hidden at
         """
         super().__init__(game)
-        self.backdrop = Backdrop(self.SCREEN_WIDTH, self.SCREEN_HEIGHT)
         self.ball_position = ball_position
         self.cups = game.cups
         
@@ -92,17 +90,14 @@ class Shuffling(BaseGameState):
     
     def draw(self, surface: pygame.Surface):
         """Draw the shuffling state."""
-        # Draw backdrop
-        self.backdrop.draw(surface)
+        # Compute message with progress
+        move_number = min(self.current_move_index, len(self.moves))
+        total_moves = len(self.moves)
+        message = f"Shuffling... ({move_number}/{total_moves})"
         
-        # Draw border
-        self._draw_border(surface)
+        # Draw base elements (backdrop, border, message bar)
+        self._draw_base(surface, message)
         
         # Draw cups
         for cup in self.cups:
             cup.draw(surface, debug=True)
-        
-        # Draw message bar with progress
-        move_number = min(self.current_move_index, len(self.moves))
-        total_moves = len(self.moves)
-        self._draw_message_bar(surface, f"Shuffling... ({move_number}/{total_moves})")

@@ -1,7 +1,6 @@
 """Cups moving state for the game."""
 
 import pygame
-from backdrop import Backdrop
 from cup import Cup
 from states.base_state import BaseGameState
 import layout
@@ -18,7 +17,6 @@ class CupsMoving(BaseGameState):
             ball_position: Which position the ball is at ("left", "middle", or "right")
         """
         super().__init__(game)
-        self.backdrop = Backdrop(self.SCREEN_WIDTH, self.SCREEN_HEIGHT)
         self.ball_position = ball_position
         self.ball = game.ball_object  # Get the ball object from the game
         self.ball_hidden = False  # Track if ball has been hidden
@@ -93,11 +91,8 @@ class CupsMoving(BaseGameState):
         Args:
             surface: The pygame surface to draw on
         """
-        # Draw backdrop
-        self.backdrop.draw(surface)
-        
-        # Draw border
-        self._draw_border(surface)
+        # Draw base elements (backdrop, border, message bar)
+        self._draw_base(surface, "Cups moving...")
         
         # Draw ball (only if not hidden by cups)
         if not self.ball_hidden:
@@ -106,6 +101,3 @@ class CupsMoving(BaseGameState):
         # Draw cups
         for cup in self.cups:
             cup.draw(surface, debug=True)
-        
-        # Draw message bar
-        self._draw_message_bar(surface, "Cups moving...")

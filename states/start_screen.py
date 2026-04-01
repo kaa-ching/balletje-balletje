@@ -1,7 +1,6 @@
 """Start screen state for the game."""
 
 import pygame
-from backdrop import Backdrop
 from states.base_state import BaseGameState
 import layout
 
@@ -15,8 +14,7 @@ class StartScreen(BaseGameState):
         Args:
             game: Reference to the main Game instance
         """
-        self.game = game
-        self.backdrop = Backdrop(self.SCREEN_WIDTH, self.SCREEN_HEIGHT)
+        super().__init__(game)
         self.title_y = self.SCREEN_HEIGHT // 2 - 120  # Center vertically (adjusted for larger text)
         self.title_alpha = 255
         self.waiting_for_space = True
@@ -63,17 +61,11 @@ class StartScreen(BaseGameState):
         Args:
             surface: The pygame surface to draw on
         """
-        # Draw backdrop
-        self.backdrop.draw(surface)
-        
-        # Draw border
-        self._draw_border(surface)
+        # Draw base elements (backdrop, border, message bar)
+        self._draw_base(surface, "Press SPACE to start")
         
         # Draw title text "balletje-balletje" in 2 lines
         self._draw_title(surface)
-        
-        # Draw message bar
-        self._draw_message_bar(surface, "Press SPACE to start")
     
     def _draw_title(self, surface: pygame.Surface):
         """Draw the title text."""

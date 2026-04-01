@@ -2,7 +2,6 @@
 
 import pygame
 import random
-from backdrop import Backdrop
 from ball import Ball
 from states.base_state import BaseGameState
 import layout
@@ -17,8 +16,7 @@ class BallVisible(BaseGameState):
         Args:
             game: Reference to the main Game instance
         """
-        self.game = game
-        self.backdrop = Backdrop(self.SCREEN_WIDTH, self.SCREEN_HEIGHT)
+        super().__init__(game)
         
         # Create ball at random position
         random_position = random.choice(["left", "middle", "right"])
@@ -52,14 +50,8 @@ class BallVisible(BaseGameState):
         Args:
             surface: The pygame surface to draw on
         """
-        # Draw backdrop
-        self.backdrop.draw(surface)
-        
-        # Draw border
-        self._draw_border(surface)
+        # Draw base elements (backdrop, border, message bar)
+        self._draw_base(surface, "Press SPACE to continue")
         
         # Draw ball
         self.ball.draw(surface)
-        
-        # Draw message bar
-        self._draw_message_bar(surface, "Press SPACE to continue")

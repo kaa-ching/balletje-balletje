@@ -1,7 +1,6 @@
 """Reveal state - show the ball and result."""
 
 import pygame
-from backdrop import Backdrop
 from states.base_state import BaseGameState
 import layout
 from cup import Cup
@@ -20,7 +19,6 @@ class Reveal(BaseGameState):
             player_guess: Which cup the player guessed (0, 1, or 2)
         """
         super().__init__(game)
-        self.backdrop = Backdrop(self.SCREEN_WIDTH, self.SCREEN_HEIGHT)
         self.ball_position = ball_position
         self.player_guess = player_guess
         self.cups = game.cups
@@ -107,24 +105,20 @@ class Reveal(BaseGameState):
     
     def draw(self, surface: pygame.Surface):
         """Draw the reveal state."""
-        # Draw backdrop
-        self.backdrop.draw(surface)
-        
-        # Draw border
-        self._draw_border(surface)
-        
-        # Draw the ball first (so cups appear on top)
-        if self.ball:
-            self.ball.draw(surface)
-        
-        # Draw cups on top of the ball (they're moving away)
-        for cup in self.cups:
-            cup.draw(surface, debug=True)
-        
-        # Draw message bar with result
+        # Determine message based on result state
         if self.result_shown:
             if self.is_correct:
                 message = "Correct! Press SPACE"
             else:
                 message = f"Wrong! Ball was at {self.correct_position_name}. SPACE"
-            self._draw_message_bar(surface, message)
+        else:
+            message = "Revealing..."
+        
+        # Draw state with custom content (ball then cups for proper layering)
+        def draw_content(s):
+            if self.ball:
+                self.ball.draw(s)
+            for cup in self.cups:
+                cup.draw(s, debug=True)
+        
+        self._draw_state(surface, message, draw_content)
