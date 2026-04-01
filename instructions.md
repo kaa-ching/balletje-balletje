@@ -45,5 +45,8 @@ We have:
 * the start text moves up, off screen. It is replaced by a ball, randomly, in one of three locations (left middle right).
   once the ball is visible, the message bar should again display the SPACE text.
 * the cups move in from the top of the screen and hide the ball. At this point, the cup should register if it hids the ball or not, the ball itself should be hidden.
+* the cups now move to their start positions: left and right move approx one cup height up, whereas the middle cup moves approx one cup down. These are the start positions.
+  the message bar should display "Get ready! Watch the cups..."
+* the cups shuffle around the screen. This is the main game mechanic - cups move to new positions in a set pattern.
 
 Let's stop here, for now.

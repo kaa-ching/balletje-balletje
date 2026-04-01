@@ -10,6 +10,8 @@ class GameState(Enum):
     START_SCREEN = "start_screen"
     BALL_VISIBLE = "ball_visible"
     CUPS_MOVING = "cups_moving"
+    CUPS_TO_START = "cups_to_start"
+    SHUFFLING = "shuffling"
 
 
 class Game:
@@ -33,6 +35,7 @@ class Game:
         self.state_instance = None
         self.ball_position = None  # Track ball position for cups_moving state
         self.ball_object = None  # Track ball object for cups_moving state
+        self.cups = None  # Track cups for shuffling state
         self._load_state(self.current_state)
     
     def _load_state(self, state: GameState):
@@ -47,6 +50,12 @@ class Game:
             from states.cups_moving import CupsMoving
             # Pass the ball position that was stored in the game
             self.state_instance = CupsMoving(self, self.ball_position)
+        elif state.value == "cups_to_start":
+            from states.cups_to_start import CupsToStart
+            self.state_instance = CupsToStart(self, self.ball_position)
+        elif state.value == "shuffling":
+            from states.shuffling import Shuffling
+            self.state_instance = Shuffling(self, self.ball_position)
     
     def change_state(self, new_state: GameState):
         """Change to a new game state."""

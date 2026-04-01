@@ -80,7 +80,12 @@ class CupsMoving(BaseGameState):
         if all_cups_stopped and not self.animation_complete:
             self.animation_complete = True
             self.ball_hidden = True  # Hide the ball once animation completes
+            # Store cups in game for next state
+            self.game.cups = self.cups
             print(f"Cups animation complete! Ball was at position: {self.ball_position}")
+            # Automatically transition to next state
+            from game import GameState
+            self.game.change_state(GameState.CUPS_TO_START)
     
     def draw(self, surface: pygame.Surface):
         """Draw the cups moving state.
@@ -103,7 +108,4 @@ class CupsMoving(BaseGameState):
             cup.draw(surface, debug=True)
         
         # Draw message bar
-        if self.animation_complete:
-            self._draw_message_bar(surface, "Press SPACE to continue")
-        else:
-            self._draw_message_bar(surface, "Cups moving...")
+        self._draw_message_bar(surface, "Cups moving...")
