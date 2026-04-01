@@ -69,8 +69,7 @@ class Shuffling(BaseGameState):
         
         # Check if all cups have finished moving
         if self.move_in_progress:
-            all_stopped = all(not cup.moving for cup in self.cups)
-            if all_stopped:
+            if self._all_cups_stopped(self.cups):
                 self.wait_time += dt
                 # Wait a moment before starting the next move
                 if self.wait_time > 0.2:

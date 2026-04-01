@@ -61,10 +61,9 @@ class ShuffleMove:
     
     def _execute_none(self, cups: list):
         """Execute the 'none' move: all cups toggle vertically."""
-        center_y = layout.VERTICAL_CENTER - Cup.HEIGHT // 2
-        offset = Cup.HEIGHT
-        up_y = center_y - offset
-        down_y = center_y + offset
+        center_y = layout.get_cup_center_y()
+        up_y = layout.get_cup_up_position()
+        down_y = layout.get_cup_down_position()
         
         moves = []
         for cup in cups:
@@ -78,10 +77,9 @@ class ShuffleMove:
     def _execute_l_m(self, cups: list):
         """Execute the 'l-m' move: cups at left and middle swap horizontally, 
         cup at right toggles vertically."""
-        center_y = layout.VERTICAL_CENTER - Cup.HEIGHT // 2
-        offset = Cup.HEIGHT
-        up_y = center_y - offset
-        down_y = center_y + offset
+        center_y = layout.get_cup_center_y()
+        up_y = layout.get_cup_up_position()
+        down_y = layout.get_cup_down_position()
         
         sorted_cups = self._get_sorted_cups(cups)
         cup_left = sorted_cups[0]
@@ -104,10 +102,9 @@ class ShuffleMove:
     def _execute_m_r(self, cups: list):
         """Execute the 'm-r' move: cups at middle and right swap horizontally, 
         cup at left toggles vertically."""
-        center_y = layout.VERTICAL_CENTER - Cup.HEIGHT // 2
-        offset = Cup.HEIGHT
-        up_y = center_y - offset
-        down_y = center_y + offset
+        center_y = layout.get_cup_center_y()
+        up_y = layout.get_cup_up_position()
+        down_y = layout.get_cup_down_position()
         
         sorted_cups = self._get_sorted_cups(cups)
         cup_left = sorted_cups[0]
@@ -130,10 +127,9 @@ class ShuffleMove:
     def _execute_l_r(self, cups: list):
         """Execute the 'l-r' move: cups at left and right swap positions diagonally 
         (both horizontally and vertically), cup at middle toggles vertically."""
-        center_y = layout.VERTICAL_CENTER - Cup.HEIGHT // 2
-        offset = Cup.HEIGHT
-        up_y = center_y - offset
-        down_y = center_y + offset
+        center_y = layout.get_cup_center_y()
+        up_y = layout.get_cup_up_position()
+        down_y = layout.get_cup_down_position()
         
         sorted_cups = self._get_sorted_cups(cups)
         cup_left = sorted_cups[0]
@@ -156,10 +152,7 @@ class ShuffleMove:
     def _execute_l_m_r(self, cups: list):
         """Execute the 'l-m-r' move: cups rotate left -> middle -> right -> left.
         The cup moving from right to left (longest distance) also moves diagonally."""
-        center_y = layout.VERTICAL_CENTER - Cup.HEIGHT // 2
-        offset = Cup.HEIGHT
-        up_y = center_y - offset
-        down_y = center_y + offset
+        center_y = layout.get_cup_center_y()
         
         sorted_cups = self._get_sorted_cups(cups)
         cup_left = sorted_cups[0]
@@ -180,10 +173,7 @@ class ShuffleMove:
     def _execute_r_m_l(self, cups: list):
         """Execute the 'r-m-l' move: cups rotate right -> middle -> left -> right.
         The cup moving from left to right (longest distance) also moves diagonally."""
-        center_y = layout.VERTICAL_CENTER - Cup.HEIGHT // 2
-        offset = Cup.HEIGHT
-        up_y = center_y - offset
-        down_y = center_y + offset
+        center_y = layout.get_cup_center_y()
         
         sorted_cups = self._get_sorted_cups(cups)
         cup_left = sorted_cups[0]

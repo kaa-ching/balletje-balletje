@@ -31,7 +31,7 @@ class Guessing(BaseGameState):
     
     def _move_cups_to_center(self):
         """Move all cups to central vertical position."""
-        center_y = layout.VERTICAL_CENTER - Cup.HEIGHT // 2
+        center_y = layout.get_cup_center_y()
         
         for cup in self.cups:
             if cup.y != center_y:
@@ -84,8 +84,7 @@ class Guessing(BaseGameState):
         
         # Check if all cups have finished moving
         if self.cups_moving:
-            all_stopped = all(not cup.moving for cup in self.cups)
-            if all_stopped:
+            if self._all_cups_stopped(self.cups):
                 self.cups_moving = False
     
     def draw(self, surface: pygame.Surface):

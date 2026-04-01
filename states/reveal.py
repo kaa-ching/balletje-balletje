@@ -27,11 +27,7 @@ class Reveal(BaseGameState):
         self.ball = game.ball_object if hasattr(game, 'ball_object') else None
         
         # Find which cup actually has the ball by checking has_ball property
-        self.correct_index = None
-        for i, cup in enumerate(self.cups):
-            if cup.has_ball:
-                self.correct_index = i
-                break
+        self.correct_index = self._find_cup_with_ball(self.cups)
         
         if self.correct_index is None:
             # Fallback if has_ball wasn't set properly
@@ -79,8 +75,7 @@ class Reveal(BaseGameState):
         
         # Check if all cups have finished moving
         if self.cups_moving:
-            all_stopped = all(not cup.moving for cup in self.cups)
-            if all_stopped:
+            if self._all_cups_stopped(self.cups):
                 self.cups_moving = False
                 self.result_shown = True
     

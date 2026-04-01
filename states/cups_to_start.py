@@ -40,12 +40,13 @@ class CupsToStart(BaseGameState):
         
         # Move cups to starting positions (different heights)
         # Left and right cups move up, middle cup moves down
-        center_y = layout.VERTICAL_CENTER - Cup.HEIGHT // 2
-        offset = Cup.HEIGHT  # One cup height
+        center_y = layout.get_cup_center_y()
+        up_y = layout.get_cup_up_position()
+        down_y = layout.get_cup_down_position()
         
-        self.cups[0].move_to(self.cups[0].x, center_y - offset)  # Left moves up
-        self.cups[1].move_to(self.cups[1].x, center_y + offset)  # Middle moves down
-        self.cups[2].move_to(self.cups[2].x, center_y - offset)  # Right moves up
+        self.cups[0].move_to(self.cups[0].x, up_y)  # Left moves up
+        self.cups[1].move_to(self.cups[1].x, down_y)  # Middle moves down
+        self.cups[2].move_to(self.cups[2].x, up_y)  # Right moves up
         
         self.animation_complete = False
     

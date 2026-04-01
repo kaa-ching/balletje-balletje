@@ -74,3 +74,28 @@ class BaseGameState:
         text = font.render(message, True, (200, 200, 255))
         text_rect = text.get_rect(center=(self.SCREEN_WIDTH // 2, self.SCREEN_HEIGHT - self.MESSAGE_BAR_HEIGHT // 2))
         surface.blit(text, text_rect)
+    
+    def _all_cups_stopped(self, cups: list) -> bool:
+        """Check if all cups have finished moving.
+        
+        Args:
+            cups: List of Cup objects to check
+            
+        Returns:
+            True if all cups are stopped, False otherwise
+        """
+        return all(not cup.moving for cup in cups)
+    
+    def _find_cup_with_ball(self, cups: list) -> int:
+        """Find the index of the cup that contains the ball.
+        
+        Args:
+            cups: List of Cup objects
+            
+        Returns:
+            Index of the cup with the ball, or None if not found
+        """
+        for i, cup in enumerate(cups):
+            if cup.has_ball:
+                return i
+        return None
