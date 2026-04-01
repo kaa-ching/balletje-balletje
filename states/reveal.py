@@ -40,10 +40,7 @@ class Reveal(BaseGameState):
             self.ball.y = cup_with_ball.y + Cup.HEIGHT // 2
         
         self.is_correct = (player_guess == self.correct_index)
-        
-        self.cups_moving = False
-        self.wait_time = 0
-        self.result_shown = False
+        self.result_shown = True  # Show message immediately
         
         # Map correct cup to position name for display
         self.correct_position_name = self._get_position_name(self.correct_index)
@@ -58,7 +55,6 @@ class Reveal(BaseGameState):
         
         for cup in self.cups:
             cup.move_to(cup.x, target_y, duration=0.5)
-            self.cups_moving = True
     
     def _get_position_name(self, cup_index: int) -> str:
         """Get the position name for a cup.
@@ -85,7 +81,7 @@ class Reveal(BaseGameState):
     
     def on_key_down(self, key: int):
         """Handle key press events."""
-        if key == pygame.K_SPACE and self.result_shown:
+        if key == pygame.K_SPACE:
             from game import GameState
             self.game.change_state(GameState.START_SCREEN)
     
@@ -96,23 +92,14 @@ class Reveal(BaseGameState):
         # Update cups
         for cup in self.cups:
             cup.update(dt)
-        
-        # Check if all cups have finished moving
-        if self.cups_moving:
-            if self._all_cups_stopped(self.cups):
-                self.cups_moving = False
-                self.result_shown = True
     
     def draw(self, surface: pygame.Surface):
         """Draw the reveal state."""
-        # Determine message based on result state
-        if self.result_shown:
-            if self.is_correct:
-                message = "Correct! Press SPACE"
-            else:
-                message = f"Wrong! Ball was at {self.correct_position_name}. SPACE"
+        # Determine message based on result
+        if self.is_correct:
+            message = "Correct! Press SPACE"
         else:
-            message = "Revealing..."
+            message = f"Wrong! Ball was at {self.correct_position_name}. SPACE"
         
         # Draw state with custom content (ball then cups for proper layering)
         def draw_content(s):

@@ -21,6 +21,13 @@ class BallVisible(BaseGameState):
         # Create ball at random position
         random_position = random.choice(["left", "middle", "right"])
         self.ball = Ball(random_position)
+        
+        # Store ball position and object for next state
+        self.game.ball_position = self.ball.position
+        self.game.ball_object = self.ball
+        
+        self.wait_time = 0
+        self.min_display_time = 1.5  # Show ball for at least 1.5 seconds
     
     def on_key_down(self, key: int):
         """Handle key press events.
@@ -28,12 +35,7 @@ class BallVisible(BaseGameState):
         Args:
             key: The pygame key code
         """
-        if key == pygame.K_SPACE:
-            # Save ball position and pass ball object to cups moving state
-            self.game.ball_position = self.ball.position
-            self.game.ball_object = self.ball
-            from game import GameState
-            self.game.change_state(GameState.CUPS_MOVING)
+        pass  # No input needed - auto-transitions to cups moving
     
     def update(self, dt: float):
         """Update the ball visible state.
@@ -43,6 +45,12 @@ class BallVisible(BaseGameState):
         """
         # Update backdrop (moving down)
         self.backdrop.update(dt, direction="down")
+        
+        # Auto-transition after minimum display time
+        self.wait_time += dt
+        if self.wait_time > self.min_display_time:
+            from game import GameState
+            self.game.change_state(GameState.CUPS_MOVING)
     
     def draw(self, surface: pygame.Surface):
         """Draw the ball visible state.
@@ -51,7 +59,7 @@ class BallVisible(BaseGameState):
             surface: The pygame surface to draw on
         """
         # Draw base elements (backdrop, border, message bar)
-        self._draw_base(surface, "Press SPACE to continue")
+        self._draw_base(surface, "")
         
         # Draw ball
         self.ball.draw(surface)
