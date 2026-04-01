@@ -3,6 +3,7 @@
 import pygame
 from backdrop import Backdrop
 from states.base_state import BaseGameState
+import layout
 
 
 class StartScreen(BaseGameState):

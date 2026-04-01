@@ -3,6 +3,7 @@
 import pygame
 from enum import Enum
 from typing import Optional
+import layout
 
 
 class GameState(Enum):
@@ -14,10 +15,11 @@ class GameState(Enum):
 class Game:
     """Main game class managing the game loop and state."""
     
-    SCREEN_WIDTH = 1920
-    SCREEN_HEIGHT = 1080
-    BORDER_SIZE = 100
-    MESSAGE_BAR_HEIGHT = 150
+    # Layout constants - use centralized layout module
+    SCREEN_WIDTH = layout.SCREEN_WIDTH
+    SCREEN_HEIGHT = layout.SCREEN_HEIGHT
+    BORDER_SIZE = layout.BORDER_SIZE
+    MESSAGE_BAR_HEIGHT = layout.MESSAGE_BAR_HEIGHT
     FPS = 60
     
     def __init__(self):
@@ -29,6 +31,8 @@ class Game:
         self.running = True
         self.current_state = GameState.START_SCREEN
         self.state_instance = None
+        self.ball_position = None  # Track ball position for cups_moving state
+        self.ball_object = None  # Track ball object for cups_moving state
         self._load_state(self.current_state)
     
     def _load_state(self, state: GameState):
@@ -39,6 +43,10 @@ class Game:
         elif state.value == "ball_visible":
             from states.ball_visible import BallVisible
             self.state_instance = BallVisible(self)
+        elif state.value == "cups_moving":
+            from states.cups_moving import CupsMoving
+            # Pass the ball position that was stored in the game
+            self.state_instance = CupsMoving(self, self.ball_position)
     
     def change_state(self, new_state: GameState):
         """Change to a new game state."""

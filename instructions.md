@@ -39,6 +39,7 @@ While developing, I'd like to see a number in the top-left corner of the cup, wi
 == Game States
 
 We have:
+
 * a Start screen, displaying "balletje-\nballetje" (thus in 2 lines) in large italic letters in the center.
   the message bar should displace "press SPACE to start" and indeed wait for the space key.
 * the start text moves up, off screen. It is replaced by a ball, randomly, in one of three locations (left middle right).

@@ -1,6 +1,7 @@
 """Ball class for the game."""
 
 import pygame
+import layout
 
 
 class Ball:
@@ -10,17 +11,11 @@ class Ball:
     RADIUS = 90  # 6x larger than original
     COLOR = (240, 240, 200)  # Light cream color
     
-    # Positions (relative to play area)
-    PLAY_AREA_LEFT = 100
-    PLAY_AREA_WIDTH = 1920 - 200  # Minus borders
-    PLAY_AREA_TOP = 100
-    PLAY_AREA_HEIGHT = 1080 - 100 - 150  # Minus top and bottom borders/message bar
-    
-    POSITION_LEFT = PLAY_AREA_LEFT + PLAY_AREA_WIDTH // 6
-    POSITION_MIDDLE = PLAY_AREA_LEFT + PLAY_AREA_WIDTH // 2
-    POSITION_RIGHT = PLAY_AREA_LEFT + (PLAY_AREA_WIDTH * 5) // 6
-    
-    VERTICAL_CENTER = PLAY_AREA_TOP + PLAY_AREA_HEIGHT // 2
+    # Positions - use centralized layout constants
+    POSITION_LEFT = layout.POSITION_LEFT
+    POSITION_MIDDLE = layout.POSITION_MIDDLE
+    POSITION_RIGHT = layout.POSITION_RIGHT
+    VERTICAL_CENTER = layout.VERTICAL_CENTER
     
     def __init__(self, position: str = "left"):
         """Initialize the ball at a given position.

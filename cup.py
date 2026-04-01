@@ -6,10 +6,10 @@ import pygame
 class Cup:
     """Represents a cup that can hide a ball."""
     
-    # Cup dimensions
-    WIDTH = 80
-    HEIGHT = 80
-    CORNER_RADIUS = 15
+    # Cup dimensions - sized to be slightly larger than the ball (radius 90)
+    WIDTH = 200
+    HEIGHT = 200
+    CORNER_RADIUS = 30
     
     # Colors
     COLOR_MAIN = (139, 90, 43)  # Brown
@@ -75,17 +75,17 @@ class Cup:
         pygame.draw.rect(surface, self.COLOR_DARK, rect, 3, border_radius=self.CORNER_RADIUS)
         
         # Draw "CooTV" text in center
-        font = pygame.font.Font(None, 24)
+        font = pygame.font.Font(None, 48)
         text = font.render("CooTV", True, self.COLOR_DARK)
         text_rect = text.get_rect(center=(self.x + self.WIDTH // 2, self.y + self.HEIGHT // 2))
         surface.blit(text, text_rect)
         
         # Debug: show cup number and ball indicator
         if debug:
-            debug_font = pygame.font.Font(None, 18)
+            debug_font = pygame.font.Font(None, 32)
             ball_indicator = "*" if self.has_ball else ""
             debug_text = debug_font.render(f"{self.position_index}{ball_indicator}", True, (255, 255, 0))
-            surface.blit(debug_text, (self.x + 5, self.y + 5))
+            surface.blit(debug_text, (self.x + 10, self.y + 10))
     
     def get_rect(self) -> pygame.Rect:
         """Get the rectangle for collision detection."""

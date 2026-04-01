@@ -1,16 +1,17 @@
 """Base state class for the game."""
 
 import pygame
+import layout
 
 
 class BaseGameState:
     """Base class for all game states."""
     
-    # Layout constants
-    SCREEN_WIDTH = 1920
-    SCREEN_HEIGHT = 1080
-    BORDER_SIZE = 100
-    MESSAGE_BAR_HEIGHT = 150
+    # Layout constants - imported from centralized layout module
+    SCREEN_WIDTH = layout.SCREEN_WIDTH
+    SCREEN_HEIGHT = layout.SCREEN_HEIGHT
+    BORDER_SIZE = layout.BORDER_SIZE
+    MESSAGE_BAR_HEIGHT = layout.MESSAGE_BAR_HEIGHT
     
     def __init__(self, game):
         """Initialize the game state.

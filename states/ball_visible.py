@@ -5,6 +5,7 @@ import random
 from backdrop import Backdrop
 from ball import Ball
 from states.base_state import BaseGameState
+import layout
 
 
 class BallVisible(BaseGameState):
@@ -30,9 +31,11 @@ class BallVisible(BaseGameState):
             key: The pygame key code
         """
         if key == pygame.K_SPACE:
-            # Return to start screen
+            # Save ball position and pass ball object to cups moving state
+            self.game.ball_position = self.ball.position
+            self.game.ball_object = self.ball
             from game import GameState
-            self.game.change_state(GameState.START_SCREEN)
+            self.game.change_state(GameState.CUPS_MOVING)
     
     def update(self, dt: float):
         """Update the ball visible state.
