@@ -1,6 +1,7 @@
 """Cup class for the game."""
 
 import pygame
+import math
 
 
 class Cup:
@@ -14,6 +15,22 @@ class Cup:
     # Colors
     COLOR_MAIN = (139, 90, 43)  # Brown
     COLOR_DARK = (101, 67, 33)  # Darker brown for text
+    
+    @staticmethod
+    def ease_in_out_cubic(t: float) -> float:
+        """Ease-in-out cubic easing function for smooth natural motion.
+        
+        Args:
+            t: Progress value from 0 to 1
+            
+        Returns:
+            Eased progress value from 0 to 1
+        """
+        if t < 0.5:
+            return 4 * t * t * t
+        else:
+            p = 2 * t - 2
+            return 0.5 * p * p * p + 1
     
     def __init__(self, position_index: int, x: float, y: float):
         """Initialize a cup.
@@ -60,17 +77,18 @@ class Cup:
         """Update cup position."""
         if self.moving:
             if self.duration is not None:
-                # Duration-based movement
+                # Duration-based movement with easing
                 self.elapsed_time += dt
                 if self.elapsed_time >= self.duration:
                     self.x = self.target_x
                     self.y = self.target_y
                     self.moving = False
                 else:
-                    # Linear interpolation based on elapsed time
+                    # Apply easing function for natural motion
                     progress = self.elapsed_time / self.duration
-                    self.x = self._start_x + (self.target_x - self._start_x) * progress
-                    self.y = self._start_y + (self.target_y - self._start_y) * progress
+                    eased_progress = self.ease_in_out_cubic(progress)
+                    self.x = self._start_x + (self.target_x - self._start_x) * eased_progress
+                    self.y = self._start_y + (self.target_y - self._start_y) * eased_progress
             else:
                 # Speed-based movement
                 dx = self.target_x - self.x
