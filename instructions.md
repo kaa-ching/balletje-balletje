@@ -48,5 +48,25 @@ We have:
 * the cups now move to their start positions: left and right move approx one cup height up, whereas the middle cup moves approx one cup down. These are the start positions.
   the message bar should display "Get ready! Watch the cups..."
 * the cups shuffle around the screen. This is the main game mechanic - cups move to new positions in a set pattern.
+  The shuffling state consists of a number of swaps of two cups.
+  For each swap, consider the relative positions again. this means that the left cup 'l' is no longer cup 'l' after the 'l-m' transtion. He's now the middle cup 'm'.
+  In any transition, all cups should move at the same time and arrive at the same time.
+  That means that their speeds thus vary.
+
+  Let's start with the 'simple' transitions:
+
+  * none: the cups move to the other vertical position.
+  * l-m: cups l and m move horizontally, while cup r moves vertically.
+  * m-r: cups m and r move horizontally, while cup l moves vertically.
+
+  We also have 2 more complicated transitions:
+
+  * l-r: cups l and r move (fast) diagonally, while cup m moves vertically.
+  * l-m-r: the cups 'rotate': left to middle, middle to right, right to left.
+  * r-m-l: the cups 'rotate': right to middle, middle to left, left to right.
+
+  let's not do random swaps yet - just repeat these steps sequentially, two times.
+
+---
 
 Let's stop here, for now.
