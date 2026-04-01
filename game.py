@@ -33,14 +33,30 @@ class Game:
     
     def _load_state(self, state: GameState):
         """Load a new game state."""
-        if state == GameState.START_SCREEN:
-            from states.start_screen import StartScreen
-            self.state_instance = StartScreen(self)
+        print(f"_load_state called with: {state}")
+        try:
+            if state.value == "start_screen":
+                print("Loading StartScreen...")
+                from states.start_screen import StartScreen
+                self.state_instance = StartScreen(self)
+            elif state.value == "ball_visible":
+                print("Loading BallVisible...")
+                from states.ball_visible import BallVisible
+                self.state_instance = BallVisible(self)
+                print("BallVisible loaded!")
+            else:
+                print(f"Unknown state: {state}")
+        except Exception as e:
+            print(f"ERROR loading state: {e}")
+            import traceback
+            traceback.print_exc()
     
     def change_state(self, new_state: GameState):
         """Change to a new game state."""
+        print(f"Changing state to: {new_state}")
         self.current_state = new_state
         self._load_state(new_state)
+        print(f"State changed successfully!")
     
     def handle_events(self):
         """Handle pygame events."""

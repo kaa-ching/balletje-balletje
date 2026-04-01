@@ -24,6 +24,7 @@ class StartScreen:
         self.title_y = self.SCREEN_HEIGHT // 2 - 120  # Center vertically (adjusted for larger text)
         self.title_alpha = 255
         self.waiting_for_space = True
+        self.has_transitioned = False  # Track if we've already transitioned
     
     def on_key_down(self, key: int):
         """Handle key press events.
@@ -33,6 +34,7 @@ class StartScreen:
         """
         if key == pygame.K_SPACE and self.waiting_for_space:
             # Transition to next state or start animation
+            print("Space pressed! Starting title exit animation...")
             self.start_title_exit_animation()
     
     def start_title_exit_animation(self):
@@ -55,13 +57,11 @@ class StartScreen:
             self.title_alpha = max(0, self.title_alpha - 255 * dt)  # Fade out
             
             # When title is completely off screen and faded, transition to next state
-            if self.title_y < -100:
+            if self.title_y < -100 and not self.has_transitioned:
+                self.has_transitioned = True
                 from game import GameState
-                # For now, we'll stay on start screen, but this is where we'd transition
-                # self.game.change_state(GameState.BALL_VISIBLE)
-                self.waiting_for_space = True
-                self.title_y = self.SCREEN_HEIGHT // 2 - 120
-                self.title_alpha = 255
+                print(f"Title animation complete! Transitioning to BALL_VISIBLE state...")
+                self.game.change_state(GameState.BALL_VISIBLE)
     
     def draw(self, surface: pygame.Surface):
         """Draw the start screen.
@@ -89,7 +89,7 @@ class StartScreen:
         pygame.draw.rect(
             surface,
             (0, 0, 0),
-            (0, self.SCREEN_HEIGHT - self.MESSAGE_BAR_HEIGHT, self.SCREEN_WIDTH, self.BORDER_SIZE)
+            (0, self.SCREEN_HEIGHT - self.MESSAGE_BAR_HEIGHT - self.BORDER_SIZE, self.SCREEN_WIDTH, self.BORDER_SIZE)
         )
         # Left border
         pygame.draw.rect(surface, (0, 0, 0), (0, self.BORDER_SIZE, self.BORDER_SIZE, self.SCREEN_HEIGHT - self.BORDER_SIZE - self.MESSAGE_BAR_HEIGHT))
