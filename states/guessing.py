@@ -44,15 +44,39 @@ class Guessing(BaseGameState):
         if self.cups_moving:
             return
         
+        # Convert position number to position coordinate
         if key == pygame.K_1:
-            self.player_guess = 0  # Left cup (index 0)
-            self._transition_to_reveal()
+            guessed_position = layout.POSITION_LEFT
         elif key == pygame.K_2:
-            self.player_guess = 1  # Middle cup (index 1)
-            self._transition_to_reveal()
+            guessed_position = layout.POSITION_MIDDLE
         elif key == pygame.K_3:
-            self.player_guess = 2  # Right cup (index 2)
-            self._transition_to_reveal()
+            guessed_position = layout.POSITION_RIGHT
+        else:
+            return
+        
+        # Find which cup is at the guessed position
+        self.player_guess = self._find_cup_at_position(guessed_position)
+        self._transition_to_reveal()
+    
+    def _find_cup_at_position(self, target_x: float) -> int:
+        """Find which cup is at a given x position.
+        
+        Args:
+            target_x: The x position to check
+            
+        Returns:
+            Index of the cup closest to that position
+        """
+        closest_cup = 0
+        closest_distance = abs(self.cups[0].x - target_x)
+        
+        for i in range(1, len(self.cups)):
+            distance = abs(self.cups[i].x - target_x)
+            if distance < closest_distance:
+                closest_distance = distance
+                closest_cup = i
+        
+        return closest_cup
     
     def on_mouse_click(self, pos: tuple):
         """Handle mouse clicks on cups."""
@@ -64,7 +88,7 @@ class Guessing(BaseGameState):
         for i, cup in enumerate(self.cups):
             cup_rect = pygame.Rect(cup.x, cup.y, Cup.WIDTH, Cup.HEIGHT)
             if cup_rect.collidepoint(x, y):
-                self.player_guess = i
+                self.player_guess = i  # Cup at this position
                 self._transition_to_reveal()
                 break
     

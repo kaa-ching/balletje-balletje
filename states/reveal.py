@@ -47,6 +47,9 @@ class Reveal(BaseGameState):
         self.wait_time = 0
         self.result_shown = False
         
+        # Map correct cup to position name for display
+        self.correct_position_name = self._get_position_name(self.correct_index)
+        
         # Move cups away to the top
         self._move_cups_away()
         print(f"Reveal state initialized! Player guessed cup {player_guess}, ball was at cup {self.correct_index}")
@@ -58,6 +61,29 @@ class Reveal(BaseGameState):
         for cup in self.cups:
             cup.move_to(cup.x, target_y, duration=0.5)
             self.cups_moving = True
+    
+    def _get_position_name(self, cup_index: int) -> str:
+        """Get the position name for a cup.
+        
+        Args:
+            cup_index: Index of the cup (0, 1, or 2)
+            
+        Returns:
+            Position name ('left', 'middle', or 'right') based on current x position
+        """
+        cup = self.cups[cup_index]
+        # Find which position this cup is closest to
+        left_dist = abs(cup.x - layout.POSITION_LEFT)
+        middle_dist = abs(cup.x - layout.POSITION_MIDDLE)
+        right_dist = abs(cup.x - layout.POSITION_RIGHT)
+        
+        min_dist = min(left_dist, middle_dist, right_dist)
+        if min_dist == left_dist:
+            return "left (1)"
+        elif min_dist == middle_dist:
+            return "middle (2)"
+        else:
+            return "right (3)"
     
     def on_key_down(self, key: int):
         """Handle key press events."""
@@ -100,5 +126,5 @@ class Reveal(BaseGameState):
             if self.is_correct:
                 message = "Correct! Press SPACE"
             else:
-                message = f"Wrong! Ball was in cup {self.correct_index + 1}. SPACE"
+                message = f"Wrong! Ball was at {self.correct_position_name}. SPACE"
             self._draw_message_bar(surface, message)
