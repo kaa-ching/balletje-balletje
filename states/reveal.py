@@ -106,6 +106,6 @@ class Reveal(BaseGameState):
             if self.ball:
                 self.ball.draw(s)
             for cup in self.cups:
-                cup.draw(s, debug=True)
+                cup.draw(s)
         
         self._draw_state(surface, message, draw_content)

@@ -124,13 +124,6 @@ class Cup:
         text = font.render("CooTV", True, self.COLOR_DARK)
         text_rect = text.get_rect(center=(self.x + self.WIDTH // 2, self.y + self.HEIGHT // 2))
         surface.blit(text, text_rect)
-        
-        # Debug: show cup number and ball indicator
-        if debug:
-            debug_font = pygame.font.Font(None, 32)
-            ball_indicator = "*" if self.has_ball else ""
-            debug_text = debug_font.render(f"{self.position_index}{ball_indicator}", True, (255, 255, 0))
-            surface.blit(debug_text, (self.x + 10, self.y + 10))
     
     def get_rect(self) -> pygame.Rect:
         """Get the rectangle for collision detection."""

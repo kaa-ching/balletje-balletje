@@ -95,4 +95,4 @@ class CupsToStart(BaseGameState):
         
         # Draw cups
         for cup in self.cups:
-            cup.draw(surface, debug=True)
+            cup.draw(surface)
