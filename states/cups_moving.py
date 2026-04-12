@@ -68,6 +68,9 @@ class CupsMoving(BaseGameState):
         # Update backdrop (moving down)
         self.backdrop.update(dt, direction="down")
         
+        # Update ball animation
+        self.ball.update(dt)
+        
         # Update cups
         all_cups_stopped = True
         for cup in self.cups:

@@ -89,6 +89,9 @@ class Reveal(BaseGameState):
         """Update the reveal state."""
         self.backdrop.update(dt, direction="down")
         
+        # Update ball animation
+        self.ball.update(dt)
+        
         # Update cups
         for cup in self.cups:
             cup.update(dt)

@@ -46,6 +46,9 @@ class BallVisible(BaseGameState):
         # Update backdrop (moving down)
         self.backdrop.update(dt, direction="down")
         
+        # Update ball animation
+        self.ball.update(dt)
+        
         # Auto-transition after minimum display time
         self.wait_time += dt
         if self.wait_time > self.min_display_time:

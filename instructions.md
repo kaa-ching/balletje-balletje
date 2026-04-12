@@ -27,6 +27,12 @@ like "press space bar", "click on the cup" and others.
 The cups consist of a brown rounded square, slightly larger than the ball.
 The cups should each display the text "CooTV" in a darker brown in the center of the cup.
 
+== Ball
+
+The ball uses the "Amigo Ball" sprite sheet (amigo_big_strip.png, CC0 license, from opengameart.org).
+It is an animated sprite rendered at 85% of its original frame size (226x220 pixels per frame, 10 frames total).
+The sprite animates continuously wherever the ball is visible.
+
 == Technology
 
 I want the game to be object-oriented.
