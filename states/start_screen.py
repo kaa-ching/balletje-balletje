@@ -62,7 +62,7 @@ class StartScreen(BaseGameState):
             surface: The pygame surface to draw on
         """
         # Draw base elements (backdrop, border, message bar)
-        self._draw_base(surface, "Press SPACE to start")
+        self._draw_base(surface, "Druk op SPATIE om te starten")
         
         # Draw title text "balletje-balletje" in 2 lines
         self._draw_title(surface)
@@ -75,7 +75,7 @@ class StartScreen(BaseGameState):
         
         # Create surface with alpha for fading
         if self.title_alpha > 0:
-            title_surface = pygame.Surface((self.SCREEN_WIDTH, 600), pygame.SRCALPHA)
+            title_surface = pygame.Surface((self.SCREEN_WIDTH, 700), pygame.SRCALPHA)
             
             # Render text
             line1 = font.render("balletje-", True, (200, 200, 255))
@@ -83,7 +83,7 @@ class StartScreen(BaseGameState):
             
             # Position lines in center with more vertical space
             line1_rect = line1.get_rect(center=(self.SCREEN_WIDTH // 2, 120))
-            line2_rect = line2.get_rect(center=(self.SCREEN_WIDTH // 2, 340))
+            line2_rect = line2.get_rect(center=(self.SCREEN_WIDTH // 2, 420))
             
             title_surface.blit(line1, line1_rect)
             title_surface.blit(line2, line2_rect)

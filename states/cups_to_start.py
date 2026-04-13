@@ -88,7 +88,7 @@ class CupsToStart(BaseGameState):
             surface: The pygame surface to draw on
         """
         # Message shows during positioning
-        message = "Get ready! Watch the cups..."
+        message = "Klaar? Let op de bekers..."
         
         # Draw base elements (backdrop, border, message bar)
         self._draw_base(surface, message)

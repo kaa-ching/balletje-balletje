@@ -8,7 +8,10 @@ from cup import Cup
 
 class Guessing(BaseGameState):
     """State where player selects which cup has the ball."""
-    
+
+    PHASE_PICKING = "picking"
+    PHASE_CONFIRMING = "confirming"
+
     def __init__(self, game, ball_position: str):
         """Initialize the guessing state.
         
@@ -22,6 +25,7 @@ class Guessing(BaseGameState):
         self.player_guess = None
         self.cups_moving = False
         self.wait_time = 0
+        self.phase = self.PHASE_PICKING
         
         # Move cups to central vertical position (middle row)
         self._move_cups_to_center()
@@ -42,19 +46,19 @@ class Guessing(BaseGameState):
         if self.cups_moving:
             return
         
-        # Convert position number to position coordinate
-        if key == pygame.K_1:
-            guessed_position = layout.POSITION_LEFT
-        elif key == pygame.K_2:
-            guessed_position = layout.POSITION_MIDDLE
-        elif key == pygame.K_3:
-            guessed_position = layout.POSITION_RIGHT
-        else:
-            return
-        
-        # Find which cup is at the guessed position
-        self.player_guess = self._find_cup_at_position(guessed_position)
-        self._transition_to_reveal()
+        if self.phase == self.PHASE_PICKING:
+            if key == pygame.K_1:
+                self._select_cup(self._find_cup_at_position(layout.POSITION_LEFT))
+            elif key == pygame.K_2:
+                self._select_cup(self._find_cup_at_position(layout.POSITION_MIDDLE))
+            elif key == pygame.K_3:
+                self._select_cup(self._find_cup_at_position(layout.POSITION_RIGHT))
+
+        elif self.phase == self.PHASE_CONFIRMING:
+            if key in (pygame.K_j, pygame.K_RETURN, pygame.K_KP_ENTER):
+                self._confirm_and_reveal()
+            elif key == pygame.K_n:
+                self._start_monty_hall()
     
     def _find_cup_at_position(self, target_x: float) -> int:
         """Find which cup is at a given x position.
@@ -75,7 +79,32 @@ class Guessing(BaseGameState):
                 closest_cup = i
         
         return closest_cup
-    
+
+    def _select_cup(self, cup_index: int):
+        """Highlight the chosen cup and enter confirming phase."""
+        self._clear_highlight()
+        self.player_guess = cup_index
+        self.cups[cup_index].highlighted = True
+        self.phase = self.PHASE_CONFIRMING
+
+    def _clear_highlight(self):
+        """Remove highlight from all cups."""
+        for cup in self.cups:
+            cup.highlighted = False
+
+    def _confirm_and_reveal(self):
+        """Transition to reveal state after player confirms their guess."""
+        self._clear_highlight()
+        from game import GameState
+        self.game.player_guess = self.player_guess
+        self.game.change_state(GameState.REVEAL)
+
+    def _start_monty_hall(self):
+        """Transition to the Monty Hall state (highlight stays on the chosen cup)."""
+        from game import GameState
+        self.game.player_guess = self.player_guess
+        self.game.change_state(GameState.MONTY_HALL)
+
     def on_mouse_click(self, pos: tuple):
         """Handle mouse clicks on cups."""
         # Ignore input if cups are still moving
@@ -86,16 +115,15 @@ class Guessing(BaseGameState):
         for i, cup in enumerate(self.cups):
             cup_rect = pygame.Rect(cup.x, cup.y, Cup.WIDTH, Cup.HEIGHT)
             if cup_rect.collidepoint(x, y):
-                self.player_guess = i  # Cup at this position
-                self._transition_to_reveal()
+                if self.phase == self.PHASE_PICKING:
+                    self._select_cup(i)
+                elif self.phase == self.PHASE_CONFIRMING:
+                    if i == self.player_guess:
+                        self._confirm_and_reveal()
+                    else:
+                        self._select_cup(i)
                 break
-    
-    def _transition_to_reveal(self):
-        """Transition to reveal state after player makes a guess."""
-        from game import GameState
-        self.game.player_guess = self.player_guess
-        self.game.change_state(GameState.REVEAL)
-    
+
     def update(self, dt: float):
         """Update the guessing state."""
         self.backdrop.update(dt, direction="down")
@@ -111,8 +139,13 @@ class Guessing(BaseGameState):
     
     def draw(self, surface: pygame.Surface):
         """Draw the guessing state."""
+        if self.phase == self.PHASE_PICKING:
+            message = "Welke beker? (1-3 of klik)"
+        else:
+            message = "Weet je het zeker? (J of N \u2014 hulplijn)"
+        
         # Draw base elements (backdrop, border, message bar)
-        self._draw_base(surface, "Which cup has the ball? (1-3 or click)")
+        self._draw_base(surface, message)
         
         # Draw cups
         for cup in self.cups:

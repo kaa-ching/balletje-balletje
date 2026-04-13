@@ -44,6 +44,7 @@ class Cup:
         self.x = x
         self.y = y
         self.has_ball = False
+        self.highlighted = False
         self.target_x = x
         self.target_y = y
         self.moving = False
@@ -114,6 +115,11 @@ class Cup:
     def draw(self, surface: pygame.Surface, debug: bool = False):
         """Draw the cup to the surface."""
         rect = pygame.Rect(self.x, self.y, self.WIDTH, self.HEIGHT)
+        
+        # Draw gold highlight glow behind the cup when selected
+        if self.highlighted:
+            glow_rect = pygame.Rect(self.x - 10, self.y - 10, self.WIDTH + 20, self.HEIGHT + 20)
+            pygame.draw.rect(surface, (255, 215, 0), glow_rect, border_radius=self.CORNER_RADIUS + 8)
         
         # Draw main cup body
         pygame.draw.rect(surface, self.COLOR_MAIN, rect, border_radius=self.CORNER_RADIUS)

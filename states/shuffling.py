@@ -93,7 +93,7 @@ class Shuffling(BaseGameState):
         # Compute message with progress
         move_number = min(self.current_move_index, len(self.moves))
         total_moves = len(self.moves)
-        message = f"Shuffling... ({move_number}/{total_moves})"
+        message = f"Husselen... ({move_number}/{total_moves})"
         
         # Draw base elements (backdrop, border, message bar)
         self._draw_base(surface, message)

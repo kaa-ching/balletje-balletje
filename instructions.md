@@ -59,25 +59,39 @@ We have:
   In any transition, all cups should move at the same time and arrive at the same time.
   That means that their speeds thus vary.
 
-  Let's start with the 'simple' transitions:
-
   * none: the cups move to the other vertical position.
   * l-m: cups l and m move horizontally, while cup r moves vertically.
   * m-r: cups m and r move horizontally, while cup l moves vertically.
-
-  We also have 2 more complicated transitions:
-
   * l-r: cups l and r move (fast) diagonally, while cup m moves vertically.
   * l-m-r: the cups 'rotate': left to middle, middle to right, right to left.
   * r-m-l: the cups 'rotate': right to middle, middle to left, left to right.
 
-  let's not do random swaps yet - just repeat these steps sequentially, two times.
-
 * The cups now move to the central vertical positions again and the status bar should
-  display the text "which cup has the ball (1-3)?".
+  display the text "Welke beker? (1-3 of klik)".
 
-* After the user has pressed buttons 1,2,3 or clicked on the cup, reveal the ball.
-  This is done by drawing the ball at the correct location and moving the cups away to the top of the screen.
-  At that point, display the text whether the user was correct or wrong.
+* After the user has pressed buttons 1,2,3 or clicked on a cup, that cup is highlighted
+  (e.g. a gold border around it) and the message bar shows:
+  "Weet je het zeker? (J of N — hulplijn)"
+
+* If the user presses 'J' (or Enter), reveal the ball as usual:
+  draw the ball at the correct location and move the cups away to the top of the screen,
+  then display whether the user was correct (show confetti!) or wrong.
+
+* If the user presses 'N', a help-line menu is shown. For now the only help line is Monty Hall.
+  (Other help lines may be added later.)
+
+* Monty Hall mode: activated when the user presses 'N' at the confirmation screen.
+  The user's already-highlighted cup serves as their initial choice. The flow continues:
+  1. The game (as the "host") reveals one of the remaining cups that does NOT contain the ball.
+     Move the cup goes offscreen at the top.The cup does not return.
+     You need to show that there's no ball: e.g. with an ellipsis?
+     Above the cups, show (in large text) "Monty Hall".
+  2. The message bar then prompts: "Wisselen (W) of Zelfde (Z/Enter)?".
+  3. If the user presses Enter (stay), the game proceeds with their original guess.
+     If the user presses 'W' (wisselen/switch), the game switches their guess (=highlight)
+     to the remaining unopened cup. take a second to move that hightlight.
+  4. The reveal then proceeds as normal: ball is shown, remaining cups move away, result is displayed.
+     If the user was right, again confetti.
+  5. The highlight is removed from the screen.
 
 If the user presses the space bar, go back to the start screen.

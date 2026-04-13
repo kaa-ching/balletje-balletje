@@ -13,6 +13,7 @@ class GameState(Enum):
     CUPS_TO_START = "cups_to_start"
     SHUFFLING = "shuffling"
     GUESSING = "guessing"
+    MONTY_HALL = "monty_hall"
     REVEAL = "reveal"
 
 
@@ -62,6 +63,9 @@ class Game:
         elif state.value == "guessing":
             from states.guessing import Guessing
             self.state_instance = Guessing(self, self.ball_position)
+        elif state.value == "monty_hall":
+            from states.monty_hall import MontyHall
+            self.state_instance = MontyHall(self, self.ball_position, self.player_guess)
         elif state.value == "reveal":
             from states.reveal import Reveal
             self.state_instance = Reveal(self, self.ball_position, self.player_guess)

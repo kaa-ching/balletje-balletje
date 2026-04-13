@@ -95,7 +95,7 @@ class CupsMoving(BaseGameState):
             surface: The pygame surface to draw on
         """
         # Draw base elements (backdrop, border, message bar)
-        self._draw_base(surface, "Cups moving...")
+        self._draw_base(surface, "Bekers komen eraan...")
         
         # Draw ball (only if not hidden by cups)
         if not self.ball_hidden:

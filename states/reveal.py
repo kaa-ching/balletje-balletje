@@ -1,10 +1,51 @@
 """Reveal state - show the ball and result."""
 
 import pygame
+import random
 from states.base_state import BaseGameState
 import layout
 from cup import Cup
 from ball import Ball
+
+
+class Confetti:
+    """Simple confetti particle system."""
+
+    COLORS = [
+        (255, 50, 50), (50, 220, 50), (50, 100, 255),
+        (255, 220, 0), (255, 80, 200), (0, 220, 220), (255, 140, 0),
+    ]
+
+    def __init__(self, screen_width: int, screen_height: int, count: int = 200):
+        self.screen_height = screen_height
+        self.particles = []
+        for _ in range(count):
+            self.particles.append({
+                'x': random.uniform(0, screen_width),
+                'y': random.uniform(-screen_height * 0.5, -10),
+                'vx': random.uniform(-60, 60),
+                'vy': random.uniform(180, 400),
+                'color': random.choice(self.COLORS),
+                'w': random.randint(8, 22),
+                'h': random.randint(4, 10),
+                'angle': random.uniform(0, 360),
+                'spin': random.uniform(-240, 240),
+            })
+
+    def update(self, dt: float):
+        for p in self.particles:
+            p['x'] += p['vx'] * dt
+            p['y'] += p['vy'] * dt
+            p['angle'] += p['spin'] * dt
+        self.particles = [p for p in self.particles if p['y'] < self.screen_height + 60]
+
+    def draw(self, surface: pygame.Surface):
+        for p in self.particles:
+            surf = pygame.Surface((p['w'], p['h']), pygame.SRCALPHA)
+            surf.fill(p['color'])
+            rotated = pygame.transform.rotate(surf, p['angle'])
+            rect = rotated.get_rect(center=(int(p['x']), int(p['y'])))
+            surface.blit(rotated, rect)
 
 
 class Reveal(BaseGameState):
@@ -42,6 +83,9 @@ class Reveal(BaseGameState):
         self.is_correct = (player_guess == self.correct_index)
         self.result_shown = True  # Show message immediately
         
+        # Start confetti if the player guessed correctly
+        self.confetti = Confetti(self.SCREEN_WIDTH, self.SCREEN_HEIGHT) if self.is_correct else None
+        
         # Map correct cup to position name for display
         self.correct_position_name = self._get_position_name(self.correct_index)
         
@@ -73,11 +117,11 @@ class Reveal(BaseGameState):
         
         min_dist = min(left_dist, middle_dist, right_dist)
         if min_dist == left_dist:
-            return "left (1)"
+            return "links (1)"
         elif min_dist == middle_dist:
-            return "middle (2)"
+            return "midden (2)"
         else:
-            return "right (3)"
+            return "rechts (3)"
     
     def on_key_down(self, key: int):
         """Handle key press events."""
@@ -95,14 +139,18 @@ class Reveal(BaseGameState):
         # Update cups
         for cup in self.cups:
             cup.update(dt)
+        
+        # Update confetti
+        if self.confetti:
+            self.confetti.update(dt)
     
     def draw(self, surface: pygame.Surface):
         """Draw the reveal state."""
         # Determine message based on result
         if self.is_correct:
-            message = "Correct! Press SPACE"
+            message = "Goed geraden! Druk op SPATIE"
         else:
-            message = f"Wrong! Ball was at {self.correct_position_name}. SPACE"
+            message = f"Helaas! De bal lag bij {self.correct_position_name}. SPATIE"
         
         # Draw state with custom content (ball then cups for proper layering)
         def draw_content(s):
@@ -110,5 +158,7 @@ class Reveal(BaseGameState):
                 self.ball.draw(s)
             for cup in self.cups:
                 cup.draw(s)
+            if self.confetti:
+                self.confetti.draw(s)
         
         self._draw_state(surface, message, draw_content)
