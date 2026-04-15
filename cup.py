@@ -53,30 +53,54 @@ class Cup:
         self.elapsed_time = 0  # Time elapsed in current move
         self._start_x = x  # Start position for duration-based moves
         self._start_y = y  # Start position for duration-based moves
+        self._delay_remaining = 0  # Seconds to wait before starting move
+        self._pending_target_x = x
+        self._pending_target_y = y
+        self._pending_duration = None
     
     def set_has_ball(self, has_ball: bool):
         """Set whether this cup contains the ball."""
         self.has_ball = has_ball
     
-    def move_to(self, target_x: float, target_y: float, duration: float = None):
+    def move_to(self, target_x: float, target_y: float, duration: float = None, delay: float = 0):
         """Start moving the cup to a target position.
         
         Args:
             target_x: Target X position
             target_y: Target Y position
             duration: Time in seconds to complete the move. If None, uses fixed speed.
+            delay: Seconds to wait before starting to move.
         """
-        self._start_x = self.x
-        self._start_y = self.y
-        self.target_x = target_x
-        self.target_y = target_y
-        self.duration = duration
-        self.elapsed_time = 0
         self.moving = True
+        if delay > 0:
+            self._delay_remaining = delay
+            self._pending_target_x = target_x
+            self._pending_target_y = target_y
+            self._pending_duration = duration
+        else:
+            self._delay_remaining = 0
+            self._start_x = self.x
+            self._start_y = self.y
+            self.target_x = target_x
+            self.target_y = target_y
+            self.duration = duration
+            self.elapsed_time = 0
     
     def update(self, dt: float):
         """Update cup position."""
         if self.moving:
+            if self._delay_remaining > 0:
+                self._delay_remaining -= dt
+                if self._delay_remaining <= 0:
+                    self._delay_remaining = 0
+                    self._start_x = self.x
+                    self._start_y = self.y
+                    self.target_x = self._pending_target_x
+                    self.target_y = self._pending_target_y
+                    self.duration = self._pending_duration
+                    self.elapsed_time = 0
+                else:
+                    return
             if self.duration is not None:
                 # Duration-based movement with easing
                 self.elapsed_time += dt

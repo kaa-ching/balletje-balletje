@@ -136,18 +136,17 @@ class ShuffleMove:
         cup_middle = sorted_cups[1]
         cup_right = sorted_cups[2]
         
-        moves = [
-            (cup_left, layout.POSITION_RIGHT, down_y if cup_left.y < center_y else up_y),   # Left moves to right, toggles vertical
-            (cup_right, layout.POSITION_LEFT, down_y if cup_right.y < center_y else up_y),  # Right moves to left, toggles vertical
-        ]
-        
-        # Middle cup toggles vertically
+        # Right cup moves first; left cup starts after a short delay so they don't cross.
+        cup_right.move_to(layout.POSITION_LEFT, down_y if cup_right.y < center_y else up_y,
+                          duration=self.MOVE_DURATION)
+        cup_left.move_to(layout.POSITION_RIGHT, down_y if cup_left.y < center_y else up_y,
+                         duration=self.MOVE_DURATION, delay=self.MOVE_DURATION * 0.2)
+
+        # Middle cup toggles vertically, no delay
         if cup_middle.y < center_y:
-            moves.append((cup_middle, cup_middle.x, down_y))
+            cup_middle.move_to(cup_middle.x, down_y, duration=self.MOVE_DURATION)
         else:
-            moves.append((cup_middle, cup_middle.x, up_y))
-        
-        self._execute_synchronized_moves(moves)
+            cup_middle.move_to(cup_middle.x, up_y, duration=self.MOVE_DURATION)
     
     def _execute_l_m_r(self, cups: list):
         """Execute the 'l-m-r' move: cups rotate left -> middle -> right -> left.
