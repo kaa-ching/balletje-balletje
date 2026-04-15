@@ -5,10 +5,28 @@ by John DRJ Vanderaert for the C64.
 
 Three cups shuffle a ball. Can you follow it?
 
-## Running the game
+## Setup
+
+Install dependencies first:
 
 ```bash
+python -m pip install -r requirements.txt
+```
+
+## Running the game
+
+### Linux
+
+```bash
+chmod +x runme.sh
 ./runme.sh
+```
+
+### Windows (PowerShell)
+
+```powershell
+.\Scripts\Activate.ps1
+python .\game.py
 ```
 
 ## How to play
