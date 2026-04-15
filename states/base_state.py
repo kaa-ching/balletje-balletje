@@ -21,7 +21,7 @@ class BaseGameState:
             game: Reference to the main Game instance
         """
         self.game = game
-        self.backdrop = Backdrop(self.SCREEN_WIDTH, self.SCREEN_HEIGHT)
+        self.backdrop = game.backdrop
     
     def on_key_down(self, key: int):
         """Handle key press events. Override in subclasses."""

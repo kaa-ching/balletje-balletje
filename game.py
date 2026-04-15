@@ -4,6 +4,7 @@ import pygame
 from enum import Enum
 from typing import Optional
 import layout
+from backdrop import Backdrop
 
 
 class GameState(Enum):
@@ -34,6 +35,7 @@ class Game:
         pygame.display.set_caption("Balletje-Balletje")
         self.clock = pygame.time.Clock()
         self.running = True
+        self.backdrop = Backdrop(self.SCREEN_WIDTH, self.SCREEN_HEIGHT)
         self.current_state = GameState.START_SCREEN
         self.state_instance = None
         self.ball_position = None  # Track ball position for cups_moving state

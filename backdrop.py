@@ -12,10 +12,10 @@ class Backdrop:
         """Initialize the backdrop with dimensions."""
         self.width = width
         self.height = height
-        self.offset_x = 0.0
-        self.offset_y = 0.0
         self.speed = 140         # pixels per second (faster)
         self.pattern_size = 80  # bigger tiles = more visible
+        self.offset_x = self.pattern_size * 0.5  # start mid-tile to avoid boundary jump when horizontal movement begins
+        self.offset_y = 0.0
         self._time = 0.0         # for colour pulsing
 
     def update(self, dt: float, direction: str = "down"):
