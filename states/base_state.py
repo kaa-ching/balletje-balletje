@@ -36,18 +36,21 @@ class BaseGameState:
         pass
     
     def _draw_border(self, surface: pygame.Surface):
-        """Draw the border around the play area."""
-        # Top border
+        """Draw the field frame when a margin is configured."""
+        if self.BORDER_SIZE <= 0:
+            return
+
+        # Top frame
         pygame.draw.rect(surface, (0, 0, 0), (0, 0, self.SCREEN_WIDTH, self.BORDER_SIZE))
-        # Bottom border (above message bar)
+        # Bottom frame (above message bar)
         pygame.draw.rect(
             surface,
             (0, 0, 0),
             (0, self.SCREEN_HEIGHT - self.MESSAGE_BAR_HEIGHT - self.BORDER_SIZE, self.SCREEN_WIDTH, self.BORDER_SIZE)
         )
-        # Left border
+        # Left frame
         pygame.draw.rect(surface, (0, 0, 0), (0, self.BORDER_SIZE, self.BORDER_SIZE, self.SCREEN_HEIGHT - self.BORDER_SIZE - self.MESSAGE_BAR_HEIGHT))
-        # Right border
+        # Right frame
         pygame.draw.rect(
             surface,
             (0, 0, 0),
@@ -103,7 +106,7 @@ class BaseGameState:
         return None
     
     def _draw_base(self, surface: pygame.Surface, message: str = None):
-        """Draw the base elements (backdrop, border, message bar).
+        """Draw the base elements (backdrop, field frame, message bar).
         Convenience method for states without custom content layering.
         
         Args:
@@ -113,8 +116,8 @@ class BaseGameState:
         self._draw_state(surface, message)
     
     def _draw_base_background(self, surface: pygame.Surface):
-        """Draw just the backdrop and border (without message bar).
-        Useful for states that need custom content layering between border and message.
+        """Draw just the backdrop and field frame (without message bar).
+        Useful for states that need custom content layering between frame and message.
         
         Args:
             surface: The pygame surface to draw on
@@ -122,7 +125,7 @@ class BaseGameState:
         # Draw backdrop
         self.backdrop.draw(surface)
         
-        # Draw border
+        # Draw field frame
         self._draw_border(surface)
     
     def _draw_state(self, surface: pygame.Surface, message: str = None, content_callback=None):
@@ -133,9 +136,9 @@ class BaseGameState:
             surface: The pygame surface to draw on
             message: Message to display in the message bar (None or empty string for blank bar)
             content_callback: Optional function(surface) to call for drawing custom content
-                            (called between backdrop/border and message bar)
+                            (called between backdrop/frame and message bar)
         """
-        # Draw backdrop and border
+        # Draw backdrop and field frame
         self._draw_base_background(surface)
         
         # Draw custom content if provided

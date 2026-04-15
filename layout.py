@@ -6,8 +6,8 @@ from cup import Cup
 SCREEN_WIDTH = 1920
 SCREEN_HEIGHT = 1080
 
-# Border dimensions
-BORDER_SIZE = 100
+# Field margin dimensions
+BORDER_SIZE = 0
 MESSAGE_BAR_HEIGHT = 150
 
 # Play area calculated dimensions

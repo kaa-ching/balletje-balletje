@@ -11,7 +11,7 @@ hard to ignore.
 
 Depending on where we are in the game, the backdrop scrolls down, up, or towards a corner.
 
-The screen has a 100px black border surrounding the play field.
+The play field fills the full screen area above the message bar, without a surrounding border.
 
 At the bottom of the screen (150px reserved) is a message bar with all player prompts.
 
@@ -61,7 +61,7 @@ Message bar: "Klaar? Let op de bekers..."
 
 ### Shuffling
 
-The cups execute a fixed sequence of moves (repeated twice):
+The cups execute 20 random shuffle moves:
 
 - none  — cups move to the other vertical position.
 - l-m   — l and m swap horizontally; r bobs vertically.

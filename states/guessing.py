@@ -144,7 +144,7 @@ class Guessing(BaseGameState):
         else:
             message = "Weet je het zeker? (J of N \u2014 hulplijn)"
         
-        # Draw base elements (backdrop, border, message bar)
+        # Draw base elements (backdrop, field frame, message bar)
         self._draw_base(surface, message)
         
         # Draw cups

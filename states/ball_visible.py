@@ -61,7 +61,7 @@ class BallVisible(BaseGameState):
         Args:
             surface: The pygame surface to draw on
         """
-        # Draw base elements (backdrop, border, message bar)
+        # Draw base elements (backdrop, field frame, message bar)
         self._draw_base(surface, "")
         
         # Draw ball

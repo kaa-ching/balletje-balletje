@@ -23,8 +23,8 @@ class Shuffling(BaseGameState):
         # Define available shuffle transitions
         move_types = ["none", "l-m", "m-r", "l-r", "l-m-r", "r-m-l"]
         
-        # Generate 10 random shuffle moves
-        self.moves = [ShuffleMove(random.choice(move_types)) for _ in range(10)]
+        # Generate 20 random shuffle moves
+        self.moves = [ShuffleMove(random.choice(move_types)) for _ in range(20)]
         
         self.current_move_index = 0
         self.move_in_progress = False
@@ -84,7 +84,7 @@ class Shuffling(BaseGameState):
         total_moves = len(self.moves)
         message = f"Husselen... ({move_number}/{total_moves})"
         
-        # Draw base elements (backdrop, border, message bar)
+        # Draw base elements (backdrop, field frame, message bar)
         self._draw_base(surface, message)
         
         # Draw cups
