@@ -13,7 +13,7 @@ Depending on where we are in the game, the backdrop scrolls down, up, or towards
 
 The play field fills the full screen area above the message bar, without a surrounding border.
 
-At the bottom of the screen (150px reserved) is a message bar with all player prompts.
+At the bottom of the screen (150px reserved) is a message bar with all player prompts. The right side of the message bar displays available key options for the current state.
 
 ## Cups
 
@@ -76,7 +76,7 @@ Message bar: "Husselen... (x/y)".
 ### Guessing — phase 1: picking
 
 Cups return to the central vertical position.
-Message bar: "Welke beker? (1-3 of klik)".
+Message bar: "Welke beker? (1-3 of klik)" (with key hints 1/2/3 shown on the right).
 Player presses 1/2/3 or clicks a cup.
 
 ### Guessing — phase 2: confirming
@@ -108,7 +108,7 @@ The player's already-highlighted cup remains their initial choice.
      "Monty Hall" is displayed in large gold text above the cups.
      Message bar: "Monty Hall onthult een lege beker..."
 
-  2. Message bar: "Wisselen (W) of Zelfde (Z / Enter)?".
+  2. Message bar: "Wisselen (W) of Zelfde (Z / Enter)?" (with key hints shown on the right).
      - W     → highlight moves to the remaining cup; "Gewisseld!" shown for 1 second,
                then proceed to Reveal with the new cup.
      - Z / Enter → proceed to Reveal with the original cup.

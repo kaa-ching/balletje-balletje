@@ -20,6 +20,14 @@ class StartScreen(BaseGameState):
         self.waiting_for_space = True
         self.has_transitioned = False  # Track if we've already transitioned
     
+    def get_valid_keys(self) -> dict:
+        """Get valid key mappings for this state."""
+        return {'space': 'Start game'}
+    
+    def get_status_message(self) -> str:
+        """Get the main status message for this state."""
+        return "Druk op SPATIE om te starten"
+    
     def on_key_down(self, key: int):
         """Handle key press events.
         
@@ -62,10 +70,13 @@ class StartScreen(BaseGameState):
             surface: The pygame surface to draw on
         """
         # Draw base elements (backdrop, field frame, message bar)
-        self._draw_base(surface, "Druk op SPATIE om te starten")
+        self._draw_base_background(surface)
         
         # Draw title text "balletje-balletje" in 2 lines
         self._draw_title(surface)
+        
+        # Draw message bar (handled by base class)
+        self._draw_message_bar(surface, self.get_status_message(), self.get_valid_keys())
     
     def _draw_title(self, surface: pygame.Surface):
         """Draw the title text."""

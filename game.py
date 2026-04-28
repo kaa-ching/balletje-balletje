@@ -1,10 +1,33 @@
 """Main game engine for Balletje-Balletje."""
 
 import pygame
+import logging
 from enum import Enum
 from typing import Optional
 import layout
 from backdrop import Backdrop
+
+# Configure logging
+logging.basicConfig(
+    level=logging.DEBUG,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.FileHandler('game.log'),
+        logging.StreamHandler()
+    ]
+)
+
+logger = logging.getLogger('game')
+
+# Import all state classes at the top
+from states.start_screen import StartScreen
+from states.ball_visible import BallVisible
+from states.cups_moving import CupsMoving
+from states.cups_to_start import CupsToStart
+from states.shuffling import Shuffling
+from states.guessing import Guessing
+from states.monty_hall import MontyHall
+from states.reveal import Reveal
 
 
 class GameState(Enum):
@@ -28,8 +51,12 @@ class Game:
     MESSAGE_BAR_HEIGHT = layout.MESSAGE_BAR_HEIGHT
     FPS = 60
     
+    # Centralized key mappings
+    GLOBAL_QUIT_KEYS = [pygame.K_q, pygame.K_ESCAPE]
+    
     def __init__(self):
         """Initialize the game."""
+        logger.info("Initializing game...")
         pygame.init()
         self.screen = pygame.display.set_mode((self.SCREEN_WIDTH, self.SCREEN_HEIGHT))
         pygame.display.set_caption("Balletje-Balletje")
@@ -43,53 +70,80 @@ class Game:
         self.cups = None  # Track cups for shuffling state
         self.player_guess = None  # Track player's cup guess
         self._load_state(self.current_state)
+        logger.info("Game initialized successfully")
     
     def _load_state(self, state: GameState):
         """Load a new game state."""
+        logger.debug(f"Loading state: {state.value}")
         if state.value == "start_screen":
-            from states.start_screen import StartScreen
             self.state_instance = StartScreen(self)
         elif state.value == "ball_visible":
-            from states.ball_visible import BallVisible
             self.state_instance = BallVisible(self)
         elif state.value == "cups_moving":
-            from states.cups_moving import CupsMoving
             # Pass the ball position that was stored in the game
             self.state_instance = CupsMoving(self, self.ball_position)
         elif state.value == "cups_to_start":
-            from states.cups_to_start import CupsToStart
             self.state_instance = CupsToStart(self, self.ball_position)
         elif state.value == "shuffling":
-            from states.shuffling import Shuffling
             self.state_instance = Shuffling(self, self.ball_position)
         elif state.value == "guessing":
-            from states.guessing import Guessing
             self.state_instance = Guessing(self, self.ball_position)
         elif state.value == "monty_hall":
-            from states.monty_hall import MontyHall
             self.state_instance = MontyHall(self, self.ball_position, self.player_guess)
         elif state.value == "reveal":
-            from states.reveal import Reveal
             self.state_instance = Reveal(self, self.ball_position, self.player_guess)
+        logger.info(f"State loaded: {state.value}")
     
     def change_state(self, new_state: GameState):
         """Change to a new game state."""
+        logger.info(f"Changing state from {self.current_state.value} to {new_state.value}")
         self.current_state = new_state
         self._load_state(new_state)
+    
+    def _handle_global_input(self, key: int) -> bool:
+        """Handle global input that applies to all states.
+        
+        Args:
+            key: The pygame key code
+            
+        Returns:
+            True if the key was handled globally, False otherwise
+        """
+        if key in self.GLOBAL_QUIT_KEYS:
+            logger.info("Quit key pressed")
+            self.running = False
+            return True
+        return False
+    
+    def _handle_state_input(self, key: int):
+        """Handle state-specific input.
+        
+        Args:
+            key: The pygame key code
+        """
+        if self.state_instance:
+            # Pass all keys to the state - let the state decide what to handle
+            self.state_instance.on_key_down(key)
     
     def handle_events(self):
         """Handle pygame events."""
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
+                logger.info("Quit event received")
                 self.running = False
             elif event.type == pygame.KEYDOWN:
-                # Always allow 'q' to quit the game
-                if event.key == pygame.K_q:
-                    self.running = False
-                elif self.state_instance:
-                    self.state_instance.on_key_down(event.key)
+                key_name = pygame.key.name(event.key)
+                logger.debug(f"Key pressed: {key_name}")
+                
+                # First handle global input (quit keys)
+                if self._handle_global_input(event.key):
+                    continue
+                    
+                # Then handle state-specific input
+                self._handle_state_input(event.key)
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if self.state_instance and hasattr(self.state_instance, 'on_mouse_click'):
+                    logger.debug(f"Mouse clicked at: {event.pos}")
                     self.state_instance.on_mouse_click(event.pos)
     
     def update(self, dt: float):
@@ -104,15 +158,19 @@ class Game:
     
     def run(self):
         """Main game loop."""
+        logger.info("Starting main game loop")
         while self.running:
             dt = self.clock.tick(self.FPS) / 1000.0  # Convert to seconds
             self.handle_events()
             self.update(dt)
             self.draw()
             pygame.display.flip()
+        logger.info("Game loop ended")
         pygame.quit()
+        logger.info("Game closed")
 
 
 if __name__ == "__main__":
+    logger.info("Starting Balletje-Balletje game")
     game = Game()
     game.run()

@@ -1,9 +1,12 @@
 """Monty Hall state - host reveals an empty cup, player switches or stays."""
 
 import pygame
+import logging
 from states.base_state import BaseGameState
 from cup import Cup
 import layout
+
+logger = logging.getLogger('monty_hall')
 
 
 class MontyHall(BaseGameState):
@@ -53,12 +56,31 @@ class MontyHall(BaseGameState):
         off_screen_y = -(Cup.HEIGHT * 2)
         reveal_cup.move_to(reveal_cup.x, off_screen_y, duration=self.LIFT_DURATION)
 
-        print(
+        logger.info(
             f"MontyHall: player chose {player_guess}, "
             f"revealing cup {self.reveal_cup_index}, "
             f"remaining cup is {self.remaining_cup_index}"
         )
 
+    def get_valid_keys(self) -> dict:
+        """Get valid key mappings for this state."""
+        if self.phase == self.PHASE_SWITCH_OR_STAY:
+            return {
+                'w': 'Switch choice',
+                'z': 'Keep choice',
+                'enter': 'Keep choice'
+            }
+        return {}
+    
+    def get_status_message(self) -> str:
+        """Get the main status message for this state."""
+        if self.phase == self.PHASE_ANIMATING:
+            return "Monty Hall onthult een lege beker..."
+        elif self.phase == self.PHASE_SWITCHING:
+            return "Gewisseld!"
+        else:
+            return "Wisselen (W) of Zelfde (Z / Enter)?"
+    
     # --- helper methods ---------------------------------------------------
 
     def _pick_reveal_cup(self) -> int:
@@ -90,7 +112,7 @@ class MontyHall(BaseGameState):
             self._switch_timer = 0.0
             self.phase = self.PHASE_SWITCHING
         elif key in (pygame.K_z, pygame.K_RETURN, pygame.K_KP_ENTER):
-            # Stay with original choice
+            # Stay with original choice (Return/Enter keys)
             self._transition_to_reveal(self.player_guess)
 
     def _transition_to_reveal(self, final_guess: int):
@@ -121,13 +143,6 @@ class MontyHall(BaseGameState):
 
     def draw(self, surface: pygame.Surface):
         """Draw the Monty Hall state."""
-        if self.phase == self.PHASE_ANIMATING:
-            message = "Monty Hall onthult een lege beker..."
-        elif self.phase == self.PHASE_SWITCHING:
-            message = "Gewisseld!"
-        else:
-            message = "Wisselen (W) of Zelfde (Z / Enter)?"
-
         def draw_content(s):
             # "Monty Hall" title above the cups
             font_title = pygame.font.Font(None, 120)
@@ -147,5 +162,5 @@ class MontyHall(BaseGameState):
             # Draw cups
             for cup in self.cups:
                 cup.draw(s)
-
-        self._draw_state(surface, message, draw_content)
+        
+        self._draw_state(surface, content_callback=draw_content)

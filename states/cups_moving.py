@@ -1,9 +1,12 @@
 """Cups moving state for the game."""
 
 import pygame
+import logging
 from cup import Cup
 from states.base_state import BaseGameState
 import layout
+
+logger = logging.getLogger('cups_moving')
 
 
 class CupsMoving(BaseGameState):
@@ -48,16 +51,21 @@ class CupsMoving(BaseGameState):
         
         self.animation_complete = False
     
+    def get_valid_keys(self) -> dict:
+        """Get valid key mappings for this state."""
+        return {}  # No public keys for this state
+    
+    def get_status_message(self) -> str:
+        """Get the main status message for this state."""
+        return "Bekers komen eraan..."
+    
     def on_key_down(self, key: int):
         """Handle key press events.
         
         Args:
             key: The pygame key code
         """
-        # For now, space returns to start screen
-        if key == pygame.K_SPACE:
-            from game import GameState
-            self.game.change_state(GameState.START_SCREEN)
+        pass  # No key handling needed for this state
     
     def update(self, dt: float):
         """Update the cups moving state.
@@ -83,7 +91,7 @@ class CupsMoving(BaseGameState):
             self.ball_hidden = True  # Hide the ball once animation completes
             # Store cups in game for next state
             self.game.cups = self.cups
-            print(f"Cups animation complete! Ball was at position: {self.ball_position}")
+            logger.info(f"Cups animation complete! Ball was at position: {self.ball_position}")
             # Automatically transition to next state
             from game import GameState
             self.game.change_state(GameState.CUPS_TO_START)
@@ -94,8 +102,8 @@ class CupsMoving(BaseGameState):
         Args:
             surface: The pygame surface to draw on
         """
-        # Draw base elements (backdrop, field frame, message bar)
-        self._draw_base(surface, "Bekers komen eraan...")
+        # Draw base elements (backdrop, field frame)
+        self._draw_base_background(surface)
         
         # Draw ball (only if not hidden by cups)
         if not self.ball_hidden:
@@ -104,3 +112,6 @@ class CupsMoving(BaseGameState):
         # Draw cups
         for cup in self.cups:
             cup.draw(surface)
+        
+        # Draw message bar (handled by base class)
+        self._draw_message_bar(surface, self.get_status_message(), self.get_valid_keys())

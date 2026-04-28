@@ -2,8 +2,11 @@
 
 import pygame
 import random
+import logging
 from states.base_state import BaseGameState
 from shuffle_moves import ShuffleMove
+
+logger = logging.getLogger('shuffling')
 
 
 class Shuffling(BaseGameState):
@@ -36,7 +39,26 @@ class Shuffling(BaseGameState):
         
         # Execute the first move
         self._execute_next_move()
-        print("Shuffling state initialized!")
+        logger.info("Shuffling state initialized!")
+    
+    def get_valid_keys(self) -> dict:
+        """Get valid key mappings for this state."""
+        return {}  # No specific keys for this state
+    
+    def get_status_message(self) -> str:
+        """Get the main status message for this state."""
+        move_number = min(self.current_move_index, len(self.moves))
+        total_moves = len(self.moves)
+        return f"Husselen... ({move_number}/{total_moves})"
+    
+    def on_key_down(self, key: int):
+        """Handle key press events."""
+        logger.debug(f"Key pressed in shuffling state: {key} (name: {pygame.key.name(key)})")
+        
+        # Secret key: 0 skips remaining shuffle moves
+        if key == pygame.K_0:
+            logger.info(f"Secret key 0 pressed: Skipping from move {self.current_move_index}/{len(self.moves)} to end")
+            self.current_move_index = len(self.moves)
     
     def _execute_next_move(self):
         """Execute the next move in the sequence."""
@@ -79,14 +101,12 @@ class Shuffling(BaseGameState):
     
     def draw(self, surface: pygame.Surface):
         """Draw the shuffling state."""
-        # Compute message with progress
-        move_number = min(self.current_move_index, len(self.moves))
-        total_moves = len(self.moves)
-        message = f"Husselen... ({move_number}/{total_moves})"
-        
-        # Draw base elements (backdrop, field frame, message bar)
-        self._draw_base(surface, message)
+        # Draw base elements (backdrop, field frame)
+        self._draw_base_background(surface)
         
         # Draw cups
         for cup in self.cups:
             cup.draw(surface)
+        
+        # Draw message bar
+        self._draw_message_bar(surface, self.get_status_message(), self.get_valid_keys())

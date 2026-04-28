@@ -29,6 +29,14 @@ class BallVisible(BaseGameState):
         self.wait_time = 0
         self.min_display_time = 1.5  # Show ball for at least 1.5 seconds
     
+    def get_valid_keys(self) -> dict:
+        """Get valid key mappings for this state."""
+        return {}  # No specific keys for this state
+    
+    def get_status_message(self) -> str:
+        """Get the main status message for this state."""
+        return ""
+    
     def on_key_down(self, key: int):
         """Handle key press events.
         
@@ -62,7 +70,6 @@ class BallVisible(BaseGameState):
             surface: The pygame surface to draw on
         """
         # Draw base elements (backdrop, field frame, message bar)
-        self._draw_base(surface, "")
-        
-        # Draw ball
+        self._draw_base_background(surface)
         self.ball.draw(surface)
+        self._draw_message_bar(surface, self.get_status_message(), self.get_valid_keys())

@@ -1,9 +1,12 @@
 """Guessing state - waiting for player to select cup."""
 
 import pygame
+import logging
 from states.base_state import BaseGameState
 import layout
 from cup import Cup
+
+logger = logging.getLogger('guessing')
 
 
 class Guessing(BaseGameState):
@@ -29,7 +32,29 @@ class Guessing(BaseGameState):
         
         # Move cups to central vertical position (middle row)
         self._move_cups_to_center()
-        print("Guessing state initialized!")
+        logger.info("Guessing state initialized!")
+    
+    def get_valid_keys(self) -> dict:
+        """Get valid key mappings for this state."""
+        if self.phase == self.PHASE_PICKING:
+            return {
+                '1': 'Left cup',
+                '2': 'Middle cup', 
+                '3': 'Right cup'
+            }
+        elif self.phase == self.PHASE_CONFIRMING:
+            return {
+                'j': 'Confirm guess',
+                'n': 'Monty Hall help'
+            }
+        return {}
+    
+    def get_status_message(self) -> str:
+        """Get the main status message for this state."""
+        if self.phase == self.PHASE_PICKING:
+            return "Welke beker? (1-3 of klik)"
+        else:
+            return "Weet je het zeker? (J of N — hulplijn)"
     
     def _move_cups_to_center(self):
         """Move all cups to central vertical position."""
@@ -139,13 +164,8 @@ class Guessing(BaseGameState):
     
     def draw(self, surface: pygame.Surface):
         """Draw the guessing state."""
-        if self.phase == self.PHASE_PICKING:
-            message = "Welke beker? (1-3 of klik)"
-        else:
-            message = "Weet je het zeker? (J of N \u2014 hulplijn)"
-        
         # Draw base elements (backdrop, field frame, message bar)
-        self._draw_base(surface, message)
+        self._draw_base(surface)
         
         # Draw cups
         for cup in self.cups:

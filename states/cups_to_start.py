@@ -1,9 +1,12 @@
 """Cups to start positions state for the game."""
 
 import pygame
+import logging
 from cup import Cup
 from states.base_state import BaseGameState
 import layout
+
+logger = logging.getLogger('cups_to_start')
 
 
 class CupsToStart(BaseGameState):
@@ -48,6 +51,14 @@ class CupsToStart(BaseGameState):
         
         self.animation_complete = False
     
+    def get_valid_keys(self) -> dict:
+        """Get valid key mappings for this state."""
+        return {}  # No specific keys for this state
+    
+    def get_status_message(self) -> str:
+        """Get the main status message for this state."""
+        return "Klaar? Let op de bekers..."
+    
     def on_key_down(self, key: int):
         """Handle key press events.
         
@@ -76,7 +87,7 @@ class CupsToStart(BaseGameState):
             self.animation_complete = True
             # Store cups in game for next state
             self.game.cups = self.cups
-            print("Cups ready at starting positions!")
+            logger.info("Cups ready at starting positions!")
             # Auto-transition to shuffling
             from game import GameState
             self.game.change_state(GameState.SHUFFLING)
@@ -87,12 +98,12 @@ class CupsToStart(BaseGameState):
         Args:
             surface: The pygame surface to draw on
         """
-        # Message shows during positioning
-        message = "Klaar? Let op de bekers..."
-        
-        # Draw base elements (backdrop, field frame, message bar)
-        self._draw_base(surface, message)
+        # Draw base elements (backdrop, field frame)
+        self._draw_base_background(surface)
         
         # Draw cups
         for cup in self.cups:
             cup.draw(surface)
+        
+        # Draw message bar
+        self._draw_message_bar(surface, self.get_status_message(), self.get_valid_keys())

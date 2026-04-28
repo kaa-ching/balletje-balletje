@@ -62,7 +62,7 @@ class Ball:
                     )
                     self.frames.append(frame.copy())
         except Exception as e:
-            print(f"Warning: Could not load sprite sheet: {e}")
+            logger.warning(f"Could not load sprite sheet: {e}")
             self.frames = []
     
     def update(self, dt: float = 0):
@@ -85,3 +85,5 @@ class Ball:
         scaled = pygame.transform.scale(frame, (int(self.FRAME_WIDTH * 0.85), int(self.FRAME_HEIGHT * 0.85)))
         rect = scaled.get_rect(center=(int(self.x), int(self.y)))
         surface.blit(scaled, rect)
+
+

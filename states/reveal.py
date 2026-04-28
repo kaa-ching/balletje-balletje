@@ -3,10 +3,13 @@
 import pygame
 import random
 import math
+import logging
 from states.base_state import BaseGameState
 import layout
 from cup import Cup
 from ball import Ball
+
+logger = logging.getLogger('reveal')
 
 
 class Confetti:
@@ -102,7 +105,18 @@ class Reveal(BaseGameState):
         
         # Move cups away to the top
         self._move_cups_away()
-        print(f"Reveal state initialized! Player guessed cup {player_guess}, ball was at cup {self.correct_index}")
+        logger.info(f"Reveal state initialized! Player guessed cup {player_guess}, ball was at cup {self.correct_index}")
+    
+    def get_valid_keys(self) -> dict:
+        """Get valid key mappings for this state."""
+        return {'space': 'Restart game'}
+    
+    def get_status_message(self) -> str:
+        """Get the main status message for this state."""
+        if self.is_correct:
+            return "Goed geraden! Druk op SPATIE"
+        else:
+            return f"Helaas! De bal lag bij {self.correct_position_name}. SPATIE"
     
     def _move_cups_away(self):
         """Move all cups away to the top of the screen."""
@@ -163,12 +177,6 @@ class Reveal(BaseGameState):
     
     def draw(self, surface: pygame.Surface):
         """Draw the reveal state."""
-        # Determine message based on result
-        if self.is_correct:
-            message = "Goed geraden! Druk op SPATIE"
-        else:
-            message = f"Helaas! De bal lag bij {self.correct_position_name}. SPATIE"
-
         # Render scene to a temp surface so we can shake it
         temp = pygame.Surface((self.SCREEN_WIDTH, self.SCREEN_HEIGHT))
 
@@ -180,8 +188,10 @@ class Reveal(BaseGameState):
             if self.confetti:
                 self.confetti.draw(s)
 
-        self._draw_state(temp, message, draw_content)
-
+        # Draw base elements with our custom content
+        self._draw_base_background(temp)
+        draw_content(temp)
+        
         # Compute shake offset (decaying random jitter)
         if self._shake_timer > 0:
             progress = self._shake_timer / self._shake_duration
@@ -193,6 +203,9 @@ class Reveal(BaseGameState):
 
         surface.blit(temp, (ox, oy))
 
+        # Draw message bar (handled by base class)
+        self._draw_message_bar(surface, self.get_status_message(), self.get_valid_keys())
+        
         # Red flash overlay (drawn directly on screen, not shaken)
         if self._flash_timer > 0:
             alpha = int(180 * (self._flash_timer / self._flash_duration))
